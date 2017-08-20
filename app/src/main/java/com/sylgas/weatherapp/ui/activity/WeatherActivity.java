@@ -2,7 +2,6 @@ package com.sylgas.weatherapp.ui.activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,6 +10,9 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,11 +32,18 @@ import com.sylgas.weatherapp.ui.model.view.Forecast;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class WeatherActivity extends Activity {
+public class WeatherActivity extends AppCompatActivity {
     private final static int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private final static int LOCATION_METERS_ACCURACY = 30;
 
+    private FloatingActionButton refreshButton;
     private TextView title;
+    private TextView description;
+    private TextView temperature;
+    private TextView pressure;
+    private TextView humidity;
+    private TextView windSpeed;
+    private TextView windDegrees;
 
     private final Notifier<Forecast> forecastNotifier = new NotifierImpl<>();
     private final Notifier<ErrorMessage> errorMessageNotifier = new NotifierImpl<>();
@@ -53,6 +62,7 @@ public class WeatherActivity extends Activity {
         injectServices();
         injectActivityModel();
         injectViews();
+        setupViews();
     }
 
     private void injectServices() {
@@ -68,6 +78,22 @@ public class WeatherActivity extends Activity {
 
     private void injectViews() {
         title = findViewById(R.id.weather_title);
+        description = findViewById(R.id.weather_subtitle);
+        temperature = findViewById(R.id.weather_temperature);
+        pressure = findViewById(R.id.weather_pressure);
+        humidity = findViewById(R.id.weather_humidity);
+        windSpeed = findViewById(R.id.wind_speed);
+        windDegrees = findViewById(R.id.wind_degrees);
+        refreshButton = findViewById(R.id.refresh);
+    }
+
+    private void setupViews() {
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                refreshModel();
+            }
+        });
     }
 
     @Override
@@ -146,12 +172,14 @@ public class WeatherActivity extends Activity {
         activityModel.onPause();
     }
 
-    private void onRefreshClick() {
-        refreshModel();
-    }
-
     private void refreshView(Forecast forecast) {
         title.setText(forecast.getTitle());
+        description.setText(forecast.getDescription());
+        temperature.setText(forecast.getTemperature());
+        pressure.setText(forecast.getPressure());
+        humidity.setText(forecast.getHumidity());
+        windSpeed.setText(forecast.getWindSpeed());
+        windDegrees.setText(forecast.getWindDegrees());
     }
 
     private void refreshView(ErrorMessage errorMessage) {

@@ -13,6 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WeatherDataService {
     private static final String API_URL = "http://api.openweathermap.org/data/2.5/";
+    private static final String UNITS_METRIC = "metric";
     private static final String APP_ID = "baffcb20761d04e4ac90d0b3f0f5dac1";
 
     private final WeatherApiService service;
@@ -32,7 +33,7 @@ public class WeatherDataService {
             return;
         }
         forecastCall = service.getForecastForCoordinates(APP_ID, coordinates.getLatitude(),
-                coordinates.getLongitude());
+                coordinates.getLongitude(), UNITS_METRIC);
         forecastCall.enqueue(new Callback<ForecastResponse>() {
             @Override
             public void onResponse(Call<ForecastResponse> call, Response<ForecastResponse> response) {
@@ -49,7 +50,9 @@ public class WeatherDataService {
     }
 
     public void cancelRequest() {
-        forecastCall.cancel();
-        forecastCall = null;
+        if (forecastCall != null) {
+            forecastCall.cancel();
+            forecastCall = null;
+        }
     }
 }

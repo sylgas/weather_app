@@ -10,5 +10,6 @@ public interface WeatherApiService {
     @GET("weather")
     Call<ForecastResponse> getForecastForCoordinates(@Query("APPID") String id,
                                                      @Query("lat") double latitude,
-                                                     @Query("lon") double longitude);
+                                                     @Query("lon") double longitude,
+                                                     @Query("units") String units);
 }

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">WeatherApp</string>
+    <string name="humidity">Humidity:\t\t</string>
+    <string name="pressure">Pressure:\t\t</string>
+    <string name="wind_speed">Wind speed:\t\t</string>
+    <string name="wind_degrees">Wind degrees:\t\t</string>
+    <string name="weather_service_error">Could not retrieve weather information from service</string>
+    <string name="gps_service_error">Could not retrieve location from GPS service</string>
 </resources>
