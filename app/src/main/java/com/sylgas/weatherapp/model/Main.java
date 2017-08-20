@@ -2,7 +2,7 @@ package com.sylgas.weatherapp.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public final class Main {
+public class Main {
     @SerializedName("temp")
     private final double temperature;
 
@@ -12,7 +12,7 @@ public final class Main {
     @SerializedName("humidity")
     private final byte humidity;
 
-    public Main(float temperature, short pressure, byte humidity) {
+    public Main(double temperature, double pressure, byte humidity) {
         this.temperature = temperature;
         this.pressure = pressure;
         this.humidity = humidity;

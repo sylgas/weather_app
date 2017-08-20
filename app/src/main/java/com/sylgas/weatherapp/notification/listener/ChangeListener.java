@@ -1,5 +1,7 @@
 package com.sylgas.weatherapp.notification.listener;
 
+import android.support.annotation.NonNull;
+
 public interface ChangeListener<T> {
-    void onChange(T changedData);
+    void onChange(@NonNull T changedData);
 }

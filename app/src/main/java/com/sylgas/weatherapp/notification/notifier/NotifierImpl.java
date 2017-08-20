@@ -1,5 +1,7 @@
 package com.sylgas.weatherapp.notification.notifier;
 
+import android.support.annotation.NonNull;
+
 import com.sylgas.weatherapp.notification.listener.ChangeListener;
 
 import java.util.LinkedList;
@@ -10,17 +12,17 @@ public class NotifierImpl<T> implements Notifier<T> {
     private final List<ChangeListener<T>> listeners = new LinkedList<>();
 
     @Override
-    public void registerListener(ChangeListener<T> listener) {
+    public void registerListener(@NonNull ChangeListener<T> listener) {
         listeners.add(listener);
     }
 
     @Override
-    public void unregisterListener(ChangeListener<T> listener) {
+    public void unregisterListener(@NonNull ChangeListener<T> listener) {
         listeners.remove(listener);
     }
 
     @Override
-    public void onChange(T changedData) {
+    public void onChange(@NonNull T changedData) {
         for (ChangeListener<T> listener : listeners) {
             listener.onChange(changedData);
         }

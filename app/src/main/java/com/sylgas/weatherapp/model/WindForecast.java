@@ -2,12 +2,17 @@ package com.sylgas.weatherapp.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public final class WindForecast {
+public class WindForecast {
     @SerializedName("speed")
-    private double speed;
+    private final double speed;
 
     @SerializedName("deg")
-    private double degrees;
+    private final double degrees;
+
+    public WindForecast(double speed, double degrees) {
+        this.speed = speed;
+        this.degrees = degrees;
+    }
 
     public double getSpeed() {
         return speed;

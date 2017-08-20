@@ -10,8 +10,4 @@ public class ErrorMessage {
     public void setMessage(int message) {
         this.message = message;
     }
-
-    public boolean isEmpty() {
-        return message != 0;
-    }
 }

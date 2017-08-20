@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.sylgas.weatherapp.R;
 import com.sylgas.weatherapp.model.Coordinates;
 import com.sylgas.weatherapp.network.service.WeatherDataService;
+import com.sylgas.weatherapp.network.service.WeatherDataServiceFactory;
 import com.sylgas.weatherapp.notification.listener.ChangeListener;
 import com.sylgas.weatherapp.notification.notifier.Notifier;
 import com.sylgas.weatherapp.notification.notifier.NotifierImpl;
@@ -45,15 +46,23 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView windSpeed;
     private TextView windDegrees;
 
-    private final Notifier<Forecast> forecastNotifier = new NotifierImpl<>();
-    private final Notifier<ErrorMessage> errorMessageNotifier = new NotifierImpl<>();
-
-    private final LocationListener locationListener = new GpsLocationListener();
-    private final ChangeListener<Forecast> forecastChangeListener = new OnForecastChangeListener();
-    private final ChangeListener<ErrorMessage> errorChangeListener = new OnErrorChangeListener();
-
     private LocationManager locationManager;
     private WeatherActivityModel activityModel;
+
+    @NonNull
+    private final Notifier<Forecast> forecastNotifier = new NotifierImpl<>();
+
+    @NonNull
+    private final Notifier<ErrorMessage> errorMessageNotifier = new NotifierImpl<>();
+
+    @NonNull
+    private final LocationListener locationListener = new GpsLocationListener();
+
+    @NonNull
+    private final ChangeListener<Forecast> forecastChangeListener = new OnForecastChangeListener();
+
+    @NonNull
+    private final ChangeListener<ErrorMessage> errorChangeListener = new OnErrorChangeListener();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +79,11 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void injectActivityModel() {
-        final WeatherDataService weatherDataService = new WeatherDataService();
+        final WeatherDataService weatherDataService = new WeatherDataServiceFactory().create();
         final ObservableForecast observableForecast = new ObservableForecast(forecastNotifier);
         final ObservableErrorMessage observableErrorMessage = new ObservableErrorMessage(errorMessageNotifier);
-        activityModel = new WeatherActivityModelImpl(weatherDataService, observableForecast, observableErrorMessage);
+        activityModel = new WeatherActivityModelImpl(weatherDataService, observableForecast,
+                observableErrorMessage);
     }
 
     private void injectViews() {
@@ -100,7 +110,8 @@ public class WeatherActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            final int[] grantResults = {checkSelfPermission(ACCESS_FINE_LOCATION), checkSelfPermission(ACCESS_COARSE_LOCATION)};
+            final int[] grantResults = {checkSelfPermission(ACCESS_FINE_LOCATION),
+                    checkSelfPermission(ACCESS_COARSE_LOCATION)};
             if (!arePermissionsGranted(grantResults)) {
                 requestLocationPermissions();
             }
@@ -118,7 +129,8 @@ public class WeatherActivity extends AppCompatActivity {
 
     private void refreshModel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            final int[] grantResults = {checkSelfPermission(ACCESS_FINE_LOCATION), checkSelfPermission(ACCESS_COARSE_LOCATION)};
+            final int[] grantResults = {checkSelfPermission(ACCESS_FINE_LOCATION),
+                    checkSelfPermission(ACCESS_COARSE_LOCATION)};
             if (!arePermissionsGranted(grantResults)) {
                 return;
             }
@@ -135,7 +147,8 @@ public class WeatherActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.M)
     private void requestLocationPermissions() {
-        final String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+        final String[] locationPermissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION};
         requestPermissions(locationPermissions, LOCATION_PERMISSION_REQUEST_CODE);
     }
 
@@ -172,7 +185,7 @@ public class WeatherActivity extends AppCompatActivity {
         activityModel.onPause();
     }
 
-    private void refreshView(Forecast forecast) {
+    private void refreshView(@NonNull Forecast forecast) {
         title.setText(forecast.getTitle());
         description.setText(forecast.getDescription());
         temperature.setText(forecast.getTemperature());
@@ -182,7 +195,7 @@ public class WeatherActivity extends AppCompatActivity {
         windDegrees.setText(forecast.getWindDegrees());
     }
 
-    private void refreshView(ErrorMessage errorMessage) {
+    private void refreshView(@NonNull ErrorMessage errorMessage) {
         Toast.makeText(this, errorMessage.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
@@ -211,14 +224,14 @@ public class WeatherActivity extends AppCompatActivity {
 
     private class OnForecastChangeListener implements ChangeListener<Forecast> {
         @Override
-        public void onChange(Forecast changedData) {
+        public void onChange(@NonNull Forecast changedData) {
             refreshView(changedData);
         }
     }
 
     private class OnErrorChangeListener implements ChangeListener<ErrorMessage> {
         @Override
-        public void onChange(ErrorMessage changedData) {
+        public void onChange(@NonNull ErrorMessage changedData) {
             refreshView(changedData);
         }
     }

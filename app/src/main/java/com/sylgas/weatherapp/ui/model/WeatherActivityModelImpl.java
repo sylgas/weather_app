@@ -1,5 +1,6 @@
 package com.sylgas.weatherapp.ui.model;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.sylgas.weatherapp.R;
@@ -16,16 +17,21 @@ import com.sylgas.weatherapp.ui.model.observable.ObservableForecast;
 import java.util.Locale;
 
 public class WeatherActivityModelImpl implements WeatherActivityModel {
+    @NonNull
     private final RequestListener<ForecastResponse> modelChangedListener = new WeatherForecastChangeListener();
 
+    @NonNull
     private final ObservableForecast observableForecast;
+
+    @NonNull
     private final ObservableErrorMessage observableErrorMessage;
 
+    @NonNull
     private final WeatherDataService weatherDataService;
 
-    public WeatherActivityModelImpl(WeatherDataService weatherDataService,
-                                    ObservableForecast observableForecast,
-                                    ObservableErrorMessage observableErrorMessage) {
+    public WeatherActivityModelImpl(@NonNull WeatherDataService weatherDataService,
+                                    @NonNull ObservableForecast observableForecast,
+                                    @NonNull ObservableErrorMessage observableErrorMessage) {
         this.weatherDataService = weatherDataService;
         this.observableForecast = observableForecast;
         this.observableErrorMessage = observableErrorMessage;
@@ -41,16 +47,17 @@ public class WeatherActivityModelImpl implements WeatherActivityModel {
     }
 
     @Override
-    public void onRefresh(Coordinates coordinates) {
+    public void onRefresh(@NonNull Coordinates coordinates) {
         weatherDataService.requestWeatherForecast(coordinates, modelChangedListener);
     }
 
     @Override
     public void onLocationFailure() {
         observableErrorMessage.setMessage(R.string.gps_service_error);
+        observableErrorMessage.notifyChange();
     }
 
-    private void handleForecastResponse(ForecastResponse forecastResponse) {
+    private void handleForecastResponse(@NonNull ForecastResponse forecastResponse) {
         final Weather[] weathers = forecastResponse.getWeathers();
         if (weathers != null && weathers.length > 0) {
             observableForecast.setTitle(forecastResponse.getName());
@@ -70,11 +77,11 @@ public class WeatherActivityModelImpl implements WeatherActivityModel {
         observableForecast.notifyChange();
     }
 
-    private void processWeather(Weather weather) {
+    private void processWeather(@NonNull Weather weather) {
         observableForecast.setDescription(String.format("%s, %s", weather.getTitle(), weather.getDescription()));
     }
 
-    private void processMain(Main main) {
+    private void processMain(@NonNull Main main) {
         observableForecast.setTemperature(String.format(Locale.getDefault(),
                 "%.0f\u00b0C", main.getTemperature()));
         observableForecast.setPressure(String.format(Locale.getDefault(),
@@ -82,7 +89,7 @@ public class WeatherActivityModelImpl implements WeatherActivityModel {
         observableForecast.setHumidity(String.format(Locale.getDefault(), "%d%%", main.getHumidity()));
     }
 
-    private void processWindForecast(WindForecast windForecast) {
+    private void processWindForecast(@NonNull WindForecast windForecast) {
         observableForecast.setWindDegrees(String.format(Locale.getDefault(),
                 "%.0f\u00b0", windForecast.getDegrees()));
         observableForecast.setWindSpeed(String.format(Locale.getDefault(),
@@ -91,6 +98,7 @@ public class WeatherActivityModelImpl implements WeatherActivityModel {
 
     private void handleErrorResponse() {
         observableErrorMessage.setMessage(R.string.weather_service_error);
+        observableErrorMessage.notifyChange();
     }
 
     private class WeatherForecastChangeListener implements RequestListener<ForecastResponse> {
@@ -104,7 +112,7 @@ public class WeatherActivityModelImpl implements WeatherActivityModel {
         }
 
         @Override
-        public void onError(Throwable e) {
+        public void onError() {
             handleErrorResponse();
         }
     }

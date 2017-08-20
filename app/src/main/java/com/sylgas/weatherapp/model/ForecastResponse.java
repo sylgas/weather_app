@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
-public final class ForecastResponse {
+public class ForecastResponse {
     @Nullable
     @SerializedName("name")
     private String name;

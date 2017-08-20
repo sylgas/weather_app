@@ -13,14 +13,9 @@ public class Weather {
     @SerializedName("description")
     private final String description;
 
-    @Nullable
-    @SerializedName("icon")
-    private final String icon;
-
-    public Weather(@Nullable String title, @Nullable String description, @Nullable String icon) {
+    public Weather(@Nullable String title, @Nullable String description) {
         this.title = title;
         this.description = description;
-        this.icon = icon;
     }
 
     @Nullable
@@ -31,10 +26,5 @@ public class Weather {
     @Nullable
     public String getDescription() {
         return description;
-    }
-
-    @Nullable
-    public String getIcon() {
-        return icon;
     }
 }
